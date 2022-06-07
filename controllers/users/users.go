@@ -47,7 +47,6 @@ func GetUserSaldo(db *sql.DB, idUser int) int {
 	var query = "SELECT saldo FROM users WHERE id_user = ?"
 	var saldo int
 	result := db.QueryRow(query, idUser).Scan(&saldo)
-	defer db.Close()
 	if result != nil {
 		if result == sql.ErrNoRows {
 			fmt.Println(result.Error())
@@ -67,7 +66,22 @@ func PostTambahSaldo(db *sql.DB, idUser int, nominal int) {
 	}
 	var newSaldo = nominal + GetUserSaldo(db, idUser)
 	result, err := statement.Exec(newSaldo, idUser)
-	defer db.Close()
+	if err != nil {
+		fmt.Println("error", err.Error())
+	} else {
+		row, _ := result.RowsAffected()
+		fmt.Println(row)
+	}
+}
+
+func PostKurangSaldo(db *sql.DB, idUser int, nominal int) {
+	var query = "update users set saldo = (?) where id_user = (?)"
+	statement, errPrepare := db.Prepare(query)
+	if errPrepare != nil {
+		fmt.Println("error", errPrepare.Error())
+	}
+	var newSaldo = GetUserSaldo(db, idUser) - nominal
+	result, err := statement.Exec(newSaldo, idUser)
 	if err != nil {
 		fmt.Println("error", err.Error())
 	} else {
