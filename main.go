@@ -30,7 +30,7 @@ func main() {
 		fmt.Println(id)
 	case 2:
 		newUser := _entities.Users{}
-		fmt.Println("Masukkan Nama")
+		fmt.Println("Masukkan Nama Lengkap")
 		fmt.Scan(&newUser.NamaLengkap)
 		fmt.Println("Masukkan Nick Name")
 		fmt.Scan(&newUser.NickName)
@@ -39,6 +39,13 @@ func main() {
 		fmt.Println("Masukkan Password")
 		var pass string
 		fmt.Scan(&pass)
+		row, err := _controllUsers.PostNewUser(DBConn, newUser)
+		if err != nil {
+			fmt.Println(err.Error())
+		} else {
+			fmt.Println("Berhasil Register")
+			fmt.Println("Baris Bertambah", row)
+		}
 
 	}
 
