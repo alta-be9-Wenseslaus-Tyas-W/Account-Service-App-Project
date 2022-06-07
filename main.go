@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	_config "project1/config"
-	_controllTopUps "project1/controllers/top-up"
 	_controllUsers "project1/controllers/users"
 	_entities "project1/entities"
 )
@@ -29,12 +28,6 @@ func main() {
 		fmt.Scan(&telp)
 		id := _controllUsers.GetIdUsersByTelp(DBConn, telp)
 		fmt.Println(id)
-		var nominal int
-		fmt.Scan(&nominal)
-		row, _ := _controllTopUps.PostTopUp(DBConn, id, nominal)
-		fmt.Println("Berhasil Register")
-		fmt.Println("Baris Bertambah", row)
-
 	case 2:
 		newUser := _entities.Users{}
 		fmt.Println("Masukkan Nama Lengkap")
