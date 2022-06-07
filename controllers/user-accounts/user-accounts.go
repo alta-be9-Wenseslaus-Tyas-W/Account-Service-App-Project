@@ -1,0 +1,5 @@
+package useraccounts
+
+func GetAllUserAccounts() {
+
+}
