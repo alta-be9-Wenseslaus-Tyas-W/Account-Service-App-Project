@@ -56,3 +56,26 @@ func PostTransfer(db *sql.DB, idPemberi int, idPenerima int, nominal int) (int, 
 		return int(rowTopUp), nil
 	}
 }
+
+func GetHistoryTransferById(db *sql.DB, idUser int) ([]_entities.HistoryTrasfer, error) {
+	var query = "select us.nama_lengakp, ur.nama_lengkap, tf.nominal , tf.sisa_saldo from transfers tf inner join users us on ts.id_user_pengirim = us.id_user inner join users ur on ts.id_user_penerima = ur.id_user where us.id_user = ?"
+	statement, errPrepare := db.Prepare(query)
+	if errPrepare != nil {
+		return []_entities.HistoryTrasfer{}, errPrepare
+	}
+	result, err := statement.Query(&idUser)
+	defer db.Close()
+	if err != nil {
+		return []_entities.HistoryTrasfer{}, err
+	}
+	var historyTransfers = []_entities.HistoryTrasfer{}
+	for result.Next() {
+		var transfer = _entities.HistoryTrasfer{}
+		err := result.Scan(&transfer.NamaPengirim, &transfer.NamaPenerima, &transfer.Nominal, &transfer.SisaSaldo)
+		if err != nil {
+			return []_entities.HistoryTrasfer{}, err
+		}
+		historyTransfers = append(historyTransfers, transfer)
+	}
+	return historyTransfers, nil
+}
