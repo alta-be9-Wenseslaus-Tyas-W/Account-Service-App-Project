@@ -8,7 +8,7 @@ type Transfers struct {
 	SisaSaldo      int
 }
 
-type HistoryTrasfer struct {
+type HistoryTransfer struct {
 	NamaPengirim string
 	NamaPenerima string
 	Nominal      int

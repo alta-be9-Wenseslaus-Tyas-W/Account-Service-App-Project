@@ -14,7 +14,6 @@ func GetAllTransfers(db *sql.DB) ([]_entities.Transfers, error) {
 		return []_entities.Transfers{}, errPrepare
 	}
 	result, err := statement.Query()
-	defer db.Close()
 	if err != nil {
 		return []_entities.Transfers{}, err
 	}
@@ -46,9 +45,8 @@ func PostTransfer(db *sql.DB, idPemberi int, idPenerima int, nominal int) (int, 
 		sisaSaldo = saldoPemberi
 		nominal = 0
 	}
-	result, err := statement.Exec(idPemberi, idPenerima, nominal, sisaSaldo)
+	result, err := statement.Exec(&idPemberi, &idPenerima, &nominal, &sisaSaldo)
 	_controllUsers.PostTambahSaldo(db, idPenerima, nominal)
-	defer db.Close()
 	if err != nil {
 		return 0, err
 	} else {
@@ -57,23 +55,22 @@ func PostTransfer(db *sql.DB, idPemberi int, idPenerima int, nominal int) (int, 
 	}
 }
 
-func GetHistoryTransferById(db *sql.DB, idUser int) ([]_entities.HistoryTrasfer, error) {
+func GetHistoryTransferById(db *sql.DB, idUser int) ([]_entities.HistoryTransfer, error) {
 	var query = "select us.nama_lengkap, ur.nama_lengkap, tf.nominal , tf.sisa_saldo from transfers tf inner join users us on tf.id_user_pengirim = us.id_user inner join users ur on tf.id_user_penerima = ur.id_user where us.id_user = ?"
 	statement, errPrepare := db.Prepare(query)
 	if errPrepare != nil {
-		return []_entities.HistoryTrasfer{}, errPrepare
+		return []_entities.HistoryTransfer{}, errPrepare
 	}
 	result, err := statement.Query(&idUser)
-	defer db.Close()
 	if err != nil {
-		return []_entities.HistoryTrasfer{}, err
+		return []_entities.HistoryTransfer{}, err
 	}
-	var historyTransfers = []_entities.HistoryTrasfer{}
+	var historyTransfers = []_entities.HistoryTransfer{}
 	for result.Next() {
-		var transfer = _entities.HistoryTrasfer{}
+		var transfer = _entities.HistoryTransfer{}
 		err := result.Scan(&transfer.NamaPengirim, &transfer.NamaPenerima, &transfer.Nominal, &transfer.SisaSaldo)
 		if err != nil {
-			return []_entities.HistoryTrasfer{}, err
+			return []_entities.HistoryTransfer{}, err
 		}
 		historyTransfers = append(historyTransfers, transfer)
 	}
