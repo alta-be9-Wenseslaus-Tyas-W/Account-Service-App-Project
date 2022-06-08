@@ -37,8 +37,7 @@ func PostTopUp(db *sql.DB, idUser int, nominal int) (int, error) {
 		return 0, errPrepare
 	}
 	_controllUsers.PostTambahSaldo(db, idUser, nominal)
-	result, err := statement.Exec(idUser, nominal)
-	defer db.Close()
+	result, err := statement.Exec(&idUser, &nominal)
 	if err != nil {
 		return 0, err
 	} else {
@@ -55,7 +54,6 @@ func GetHistoryTopUpById(db *sql.DB, idUser int) ([]_entities.TopUp, error) {
 		return []_entities.TopUp{}, errPrepare
 	}
 	result, err := statement.Query(&idUser)
-	defer db.Close()
 	if err != nil {
 		return []_entities.TopUp{}, err
 	}
