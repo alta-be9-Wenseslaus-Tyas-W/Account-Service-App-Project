@@ -153,8 +153,8 @@ func main() {
 				fmt.Println(err.Error())
 			} else {
 				for _, v := range result {
-					fmt.Printf("Nama Pengirim: %s Nama Penerima: %s \n", v.NamaPengirim, v.NamaPenerima)
-					fmt.Printf("Nominal: %d Sisa Saldo: %d \n", v.Nominal, v.SisaSaldo)
+					fmt.Printf("Nama Pengirim: %s \t Nama Penerima: %s \n", v.NamaPengirim, v.NamaPenerima)
+					fmt.Printf("Nominal: %d \t Sisa Saldo: %d \n", v.Nominal, v.SisaSaldo)
 				}
 			}
 			fmt.Print("\n")
