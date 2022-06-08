@@ -7,3 +7,10 @@ type Transfers struct {
 	Nominal        int
 	SisaSaldo      int
 }
+
+type HistoryTrasfer struct {
+	NamaPengirim string
+	NamaPenerima string
+	Nominal      int
+	SisaSaldo    int
+}
