@@ -89,3 +89,19 @@ func PostKurangSaldo(db *sql.DB, idUser int, nominal int) {
 		fmt.Println(row)
 	}
 }
+
+// tester
+func DeleteUser(db *sql.DB, id int) {
+	var delete = "DELETE from users WHERE id_user = ? "
+	statment, errPrepare := db.Prepare((delete))
+	if errPrepare != nil {
+		fmt.Println("error", errPrepare.Error())
+	}
+	var result, err = statment.Exec(&id)
+	if err != nil {
+		fmt.Println("error", err.Error())
+	} else {
+		row, _ := result.RowsAffected()
+		fmt.Println(row)
+	}
+}

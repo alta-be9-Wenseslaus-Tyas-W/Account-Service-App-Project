@@ -19,15 +19,29 @@ func main() {
 	fmt.Println("Selamat Datang")
 	fmt.Println("1. Log In")
 	fmt.Println("2. Register")
+	// tester
+	fmt.Println("3. Read Account")
+	fmt.Println("5. Delete Account")
 	var pilih int
+	var id int
 	fmt.Scan(&pilih)
 	switch pilih {
 	case 1:
 		fmt.Println("Masukkan Nomer Telpon")
 		var telp string
 		fmt.Scan(&telp)
-		id := _controllUsers.GetIdUsersByTelp(DBConn, telp)
+		id = _controllUsers.GetIdUsersByTelp(DBConn, telp)
 		fmt.Println(id)
+
+		fmt.Println("Apakah Anda Yakin Akan Menghapus Akun Anda?")
+		fmt.Println("1. Ya. Saya akan menghapus akun milik saya")
+		fmt.Println("2. Tidak. Syaa tidak yakin untuk menghapus akun milik saya")
+		var pilih1 int
+		fmt.Scan(&pilih1)
+		if pilih1 == 1 {
+			_controllUsers.DeleteUser(DBConn, id)
+		}
+
 	case 2:
 		newUser := _entities.Users{}
 		fmt.Println("Masukkan Nama Lengkap")
@@ -47,6 +61,21 @@ func main() {
 			fmt.Println("Baris Bertambah", row)
 		}
 
-	}
+		// tester
+		// case 3:
+		// 	results := _controllUsers.PostNewUser(DBConn)
+		// 	for _, v := range results {
+		// 		fmt.Println("ID:", v.id_user, "Nama Lengkap:", v.nama_lengkap, "Nick Name:", v.nick_name, "Nomer Telepon:", v.nomer_telp, "Saldo:", v.saldo)
+		// 	}
 
+	case 5:
+		fmt.Println("Apakah Anda Yakin Akan Menghapus Akun Anda?")
+		fmt.Println("1. Ya. Saya akan menghapus akun milik saya")
+		fmt.Println("2. Tidak. Syaa tidak yakin untuk menghapus akun milik saya")
+		var pilih1 int
+		fmt.Scan(&pilih1)
+		if pilih1 == 1 {
+			_controllUsers.DeleteUser(DBConn, id)
+		}
+	}
 }
