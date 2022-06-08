@@ -47,3 +47,26 @@ func PostTopUp(db *sql.DB, idUser int, nominal int) (int, error) {
 		return int(rowTopUp), nil
 	}
 }
+
+func GetHistoryTopUpById(db *sql.DB, idUser int) ([]_entities.TopUp, error) {
+	var query = "select id_top_ups , id_user , nominal from top_ups where id_user = ?"
+	statement, errPrepare := db.Prepare(query)
+	if errPrepare != nil {
+		return []_entities.TopUp{}, errPrepare
+	}
+	result, err := statement.Query(&idUser)
+	defer db.Close()
+	if err != nil {
+		return []_entities.TopUp{}, err
+	}
+	var historyTopUp = []_entities.TopUp{}
+	for result.Next() {
+		var topup = _entities.TopUp{}
+		err := result.Scan(&topup.IdTopUps, &topup.IdUser, &topup.Nominal)
+		if err != nil {
+			return []_entities.TopUp{}, err
+		}
+		historyTopUp = append(historyTopUp, topup)
+	}
+	return historyTopUp, nil
+}
