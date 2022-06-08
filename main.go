@@ -19,7 +19,7 @@ func init() {
 func main() {
 	defer DBConn.Close()
 	var ticket = false
-	var id int
+	var idAccount int
 	for !ticket {
 		var pilih int
 		fmt.Println("Selamat Datang")
@@ -34,8 +34,8 @@ func main() {
 			var telp string
 			fmt.Scan(&telp)
 			fmt.Print("\n")
-			id = _controllUsers.GetIdUsersByTelp(DBConn, telp)
-			if id == -1 {
+			idAccount = _controllUsers.GetIdUsersByTelp(DBConn, telp)
+			if idAccount == -1 {
 				fmt.Println("Account tidak ditemukan, silahkan melakukan register terlebih dahulu")
 			} else {
 				fmt.Println("Account terdaftar")
@@ -63,6 +63,7 @@ func main() {
 				fmt.Println(err.Error())
 			} else {
 				fmt.Println("Berhasil Register")
+				idAccount = _controllUsers.GetIdUsersByTelp(DBConn, newUser.Telp)
 			}
 			ticket = true
 		} else {
@@ -100,7 +101,7 @@ func main() {
 			fmt.Scan(&pilih1)
 			fmt.Print("\n")
 			if pilih1 == 1 {
-				_controllUsers.DeleteUser(DBConn, id)
+				_controllUsers.DeleteUser(DBConn, idAccount)
 				ticket = false
 			} else {
 				fmt.Println("Account Tidak Dihapus oleh User")
@@ -111,7 +112,7 @@ func main() {
 			fmt.Print("Silahkan Masukkan Nominal Top Up: ")
 			fmt.Scan(&nominal)
 			fmt.Print("\n")
-			_, err := _controllTopUps.PostTopUp(DBConn, id, nominal)
+			_, err := _controllTopUps.PostTopUp(DBConn, idAccount, nominal)
 			if err != nil {
 				fmt.Println(err.Error())
 			} else {
@@ -128,7 +129,7 @@ func main() {
 			fmt.Scan(&nominal)
 			fmt.Print("\n")
 			var idPenerima = _controllUsers.GetIdUsersByTelp(DBConn, telpPenerima)
-			_, err := _controllTransfers.PostTransfer(DBConn, id, idPenerima, nominal)
+			_, err := _controllTransfers.PostTransfer(DBConn, idAccount, idPenerima, nominal)
 			if err != nil {
 				fmt.Println(err.Error())
 			} else {
@@ -137,7 +138,7 @@ func main() {
 			fmt.Print("\n")
 		case 6:
 			fmt.Println("History Top Up Account Anda:")
-			result, err := _controllTopUps.GetHistoryTopUpById(DBConn, id)
+			result, err := _controllTopUps.GetHistoryTopUpById(DBConn, idAccount)
 			if err != nil {
 				fmt.Println(err.Error())
 			} else {
@@ -148,7 +149,7 @@ func main() {
 			fmt.Print("\n")
 		case 7:
 			fmt.Println("History Transfer Account Anda:")
-			result, err := _controllTransfers.GetHistoryTransferById(DBConn, id)
+			result, err := _controllTransfers.GetHistoryTransferById(DBConn, idAccount)
 			if err != nil {
 				fmt.Println(err.Error())
 			} else {
