@@ -71,7 +71,6 @@ func main() {
 	}
 	for ticket {
 		var pilih int
-		defer DBConn.Begin()
 		fmt.Println("SELAMAT DATANG")
 		fmt.Println("Silahkan Pilih Fitur yang Tersedia")
 		fmt.Println("1. Read Account")
@@ -95,6 +94,52 @@ func main() {
 			fmt.Println("Saldo: ", result.Saldo)
 			fmt.Println()
 		case 2:
+			var namaLengkap string
+			var nickName string
+			var telp string
+			var pass string
+			fmt.Println("Masukkan data baru")
+			fmt.Println("Jika data tidak ingin diubah silahkan dikosongkan")
+			fmt.Print("Masukkan Nama Lengkap: ")
+			fmt.Scan(&namaLengkap)
+			fmt.Print("\n")
+			fmt.Print("Masukkan Nick Name: ")
+			fmt.Scan(&nickName)
+			fmt.Print("\n")
+			fmt.Print("Masukkan Nomer Telepon: ")
+			fmt.Scan(&telp)
+			fmt.Print("\n")
+			fmt.Print("Masukkan Password: ")
+			fmt.Scan(&pass)
+			fmt.Print("\n")
+			var query = "update users ur set "
+			coma := 0
+			if namaLengkap != "" {
+				query += fmt.Sprintf("ur.nama_lengkap = '%s'", namaLengkap)
+				coma++
+			}
+			if nickName != "" && coma == 0 {
+				query += fmt.Sprintf("ur.nick_name = '%s'", nickName)
+				coma++
+			} else if nickName != "" && coma == 1 {
+				query += fmt.Sprintf(",ur.nick_name = '%s'", nickName)
+			}
+			if telp != "" && coma == 0 {
+				query += fmt.Sprintf("ur.telp = '%s'", telp)
+			} else if telp != "" {
+				query += fmt.Sprintf(",ur.telp = '%s'", telp)
+			}
+			// if pass != "" {
+			//_controllUserAccount
+			// }
+			query += " where ur.id_user = ?"
+			_, err := _controllUsers.PutDataUser(DBConn, query, idAccount)
+			if err != nil {
+				fmt.Println("Update Gagal", err.Error())
+			} else {
+				fmt.Println("Update Berhasil")
+			}
+			fmt.Print("\n")
 		case 3:
 			fmt.Println("Delete Account Anda")
 			fmt.Println("Apakah Anda Yakin Akan Menghapus Account Anda?")
@@ -173,7 +218,7 @@ func main() {
 			fmt.Println("Nama: ", result.NamaLengkap)
 			fmt.Println("Nick Name: ", result.NickName)
 			fmt.Println("Nomer Telpon: ", result.Telp)
-			fmt.Println()
+			fmt.Print("\n")
 		case 9:
 			fmt.Println("Terimakasih Atas Kunjungannya")
 			ticket = false
