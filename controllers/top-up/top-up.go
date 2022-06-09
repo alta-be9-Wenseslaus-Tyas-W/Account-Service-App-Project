@@ -36,7 +36,10 @@ func PostTopUp(db *sql.DB, idUser int, nominal int) (int, error) {
 	if errPrepare != nil {
 		return 0, errPrepare
 	}
-	_controllUsers.PostTambahSaldo(db, idUser, nominal)
+	_, errSaldo := _controllUsers.PostTambahSaldo(db, idUser, nominal)
+	if errSaldo != nil {
+		return 0, errSaldo
+	}
 	result, err := statement.Exec(&idUser, &nominal)
 	if err != nil {
 		return 0, err
