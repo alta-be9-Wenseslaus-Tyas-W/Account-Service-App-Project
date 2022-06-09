@@ -33,8 +33,6 @@ func PostNewUser(db *sql.DB, newUser _entities.Users) (int, error) {
 	}
 	result, err := statement.Exec(newUser.NamaLengkap, newUser.NickName, newUser.Telp, 0)
 
-	defer db.Close()
-
 	if err != nil {
 		return 0, err
 	} else {
@@ -104,4 +102,19 @@ func DeleteUser(db *sql.DB, id int) {
 		row, _ := result.RowsAffected()
 		fmt.Println(row)
 	}
+
+}
+
+func ReadUserInfo(db *sql.DB, id int) _entities.Users {
+	// results, err := db.Query("SELECT * from users")
+	results := db.QueryRow("SELECT id_user, nama_lengkap, nick_name, telp, saldo from users where id_user = ?", &id)
+
+	var dataUser _entities.Users
+	err := results.Scan(&dataUser.IdUser, &dataUser.NamaLengkap, &dataUser.NickName, &dataUser.Telp, &dataUser.Saldo)
+
+	if err != nil {
+		fmt.Println("error scan", err.Error())
+	}
+
+	return dataUser
 }
