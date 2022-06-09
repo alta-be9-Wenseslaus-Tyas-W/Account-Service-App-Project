@@ -50,10 +50,8 @@ func GetUserPassword(db *sql.DB, id int) string {
 	result := db.QueryRow(query, &id).Scan(&pass)
 	if result != nil {
 		if result == sql.ErrNoRows {
-			fmt.Println(result.Error())
 			return ""
 		}
-		fmt.Println(result.Error())
 		return ""
 	}
 	return pass
