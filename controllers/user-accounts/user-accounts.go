@@ -75,6 +75,20 @@ func PutUserPassword(db *sql.DB, newPass string, id int) (int, error) {
 	}
 }
 
+func DeleteUserPassword(db *sql.DB, id int) (int, error) {
+	var query = "delete from user_accounts where id_user_accounts = ?"
+	statement, errPrepare := db.Prepare(query)
+	if errPrepare != nil {
+		return 0, errPrepare
+	}
+	result, err := statement.Exec(&id)
+	if err != nil {
+		return 0, err
+	} else {
+		row, _ := result.RowsAffected()
+		return int(row), nil
+	}
+}
 func GetMD5Hash(message string) string {
 	hash := md5.Sum([]byte(message))
 	return hex.EncodeToString(hash[:])
