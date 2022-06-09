@@ -6,6 +6,7 @@ import (
 	_config "project1/config"
 	_controllTopUps "project1/controllers/top-up"
 	_controllTransfers "project1/controllers/transfers"
+	_controllUserAccount "project1/controllers/user-accounts"
 	_controllUsers "project1/controllers/users"
 	_entities "project1/entities"
 )
@@ -63,6 +64,13 @@ func main() {
 				fmt.Println(err.Error())
 			} else {
 				fmt.Println("Berhasil Register")
+				var idBaru = _controllUsers.GetIdUsersByTelp(DBConn, newUser.Telp)
+				_, errpass := _controllUserAccount.PostNewPassword(DBConn, idBaru, pass)
+				if errpass != nil {
+					fmt.Println("Password Gagal")
+				} else {
+					fmt.Println("Password Berhasil Terdaftar")
+				}
 			}
 		} else {
 			fmt.Println("Terimakasih Atas Kunjungannya")
