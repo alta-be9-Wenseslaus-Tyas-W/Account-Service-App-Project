@@ -2,7 +2,6 @@ package users
 
 import (
 	"database/sql"
-	"fmt"
 	_entities "project1/entities"
 )
 
@@ -114,7 +113,7 @@ func ReadUserInfo(db *sql.DB, id int) _entities.Users {
 	err := results.Scan(&dataUser.IdUser, &dataUser.NamaLengkap, &dataUser.NickName, &dataUser.Telp, &dataUser.Saldo)
 
 	if err != nil {
-		fmt.Println("error scan", err.Error())
+		return _entities.Users{}
 	}
 
 	return dataUser
