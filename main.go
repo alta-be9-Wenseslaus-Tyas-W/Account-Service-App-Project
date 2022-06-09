@@ -63,9 +63,7 @@ func main() {
 				fmt.Println(err.Error())
 			} else {
 				fmt.Println("Berhasil Register")
-				idAccount = _controllUsers.GetIdUsersByTelp(DBConn, newUser.Telp)
 			}
-			ticket = true
 		} else {
 			fmt.Println("Terimakasih Atas Kunjungannya")
 			break
@@ -90,6 +88,12 @@ func main() {
 		fmt.Print("\n")
 		switch pilih {
 		case 1:
+			result := _controllUsers.ReadUserInfo(DBConn, idAccount)
+			fmt.Println("Nama: ", result.NamaLengkap)
+			fmt.Println("Nick Name: ", result.NickName)
+			fmt.Println("Nomer Telpon: ", result.Telp)
+			fmt.Println("Saldo: ", result.Saldo)
+			fmt.Println()
 		case 2:
 		case 3:
 			fmt.Println("Delete Account Anda")
@@ -160,6 +164,16 @@ func main() {
 			}
 			fmt.Print("\n")
 		case 8:
+			fmt.Print("Masukkan Nomer Telpon Account lain: ")
+			var telp string
+			fmt.Scan(&telp)
+			fmt.Print("\n")
+			idLain := _controllUsers.GetIdUsersByTelp(DBConn, telp)
+			result := _controllUsers.ReadUserInfo(DBConn, idLain)
+			fmt.Println("Nama: ", result.NamaLengkap)
+			fmt.Println("Nick Name: ", result.NickName)
+			fmt.Println("Nomer Telpon: ", result.Telp)
+			fmt.Println()
 		case 9:
 			fmt.Println("Terimakasih Atas Kunjungannya")
 			ticket = false
