@@ -106,7 +106,6 @@ func DeleteUser(db *sql.DB, id int) {
 }
 
 func ReadUserInfo(db *sql.DB, id int) _entities.Users {
-	// results, err := db.Query("SELECT * from users")
 	results := db.QueryRow("SELECT id_user, nama_lengkap, nick_name, telp, saldo from users where id_user = ?", &id)
 
 	var dataUser _entities.Users
