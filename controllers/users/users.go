@@ -88,7 +88,6 @@ func PostKurangSaldo(db *sql.DB, idUser int, nominal int) {
 	}
 }
 
-// tester
 func DeleteUser(db *sql.DB, id int) {
 	var delete = "DELETE from users WHERE id_user = ? "
 	statment, errPrepare := db.Prepare((delete))
