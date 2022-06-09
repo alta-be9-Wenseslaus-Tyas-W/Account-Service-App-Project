@@ -41,8 +41,11 @@ func main() {
 			fmt.Print("\n")
 			idAccount = _controllUsers.GetIdUsersByTelp(DBConn, telp)
 			passAccount := _controllUserAccount.GetUserPassword(DBConn, idAccount)
-			if idAccount == -1 && _controllUserAccount.CheckPassword(pass, passAccount) {
+			tempPass := _controllUserAccount.GetMD5Hash(pass)
+			if idAccount == -1 {
 				fmt.Println("Account tidak ditemukan, silahkan melakukan register terlebih dahulu ATAU Password anda salah")
+			} else if tempPass != passAccount {
+				fmt.Println("Password anda salah")
 			} else {
 				fmt.Println("Account terdaftar")
 				ticket = true

@@ -1,7 +1,7 @@
 package useraccounts
 
 import (
-	"crypto/aes"
+	"crypto/md5"
 	"database/sql"
 	"encoding/hex"
 	"fmt"
@@ -34,7 +34,8 @@ func PostNewPassword(db *sql.DB, id int, password string) (int, error) {
 	if errPrepare != nil {
 		return 0, errPrepare
 	}
-	result, err := statement.Exec(&id, &password)
+	var enPass = GetMD5Hash(password)
+	result, err := statement.Exec(&id, &enPass)
 	if err != nil {
 		return 0, err
 	} else {
@@ -58,29 +59,7 @@ func GetUserPassword(db *sql.DB, id int) string {
 	return pass
 }
 
-func CheckPassword(inputPass string, dataPass string) bool {
-	return inputPass == dataPass
-}
-
-func EncryptPassword(key string, message string) string {
-	c, err := aes.NewCipher([]byte(key))
-	if err != nil {
-		fmt.Println(err)
-	}
-	msgByte := make([]byte, len(message))
-	c.Encrypt(msgByte, []byte(message))
-	return hex.EncodeToString(msgByte)
-}
-
-func DecryptPassword(key string, message string) string {
-	txt, _ := hex.DecodeString(message)
-	c, err := aes.NewCipher([]byte(key))
-	if err != nil {
-		fmt.Println(err)
-	}
-	msgByte := make([]byte, len(txt))
-	c.Decrypt(msgByte, []byte(txt))
-
-	msg := string(msgByte[:])
-	return msg
+func GetMD5Hash(message string) string {
+	hash := md5.Sum([]byte(message))
+	return hex.EncodeToString(hash[:])
 }
