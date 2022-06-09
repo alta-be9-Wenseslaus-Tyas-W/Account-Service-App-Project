@@ -56,7 +56,7 @@ func PostTransfer(db *sql.DB, idPemberi int, idPenerima int, nominal int) (int, 
 }
 
 func GetHistoryTransferById(db *sql.DB, idUser int) ([]_entities.HistoryTransfer, error) {
-	var query = "select us.nama_lengkap, ur.nama_lengkap, tf.nominal , tf.sisa_saldo from transfers tf inner join users us on tf.id_user_pengirim = us.id_user inner join users ur on tf.id_user_penerima = ur.id_user where us.id_user = ?"
+	var query = "select us.nama_lengkap, ur.nama_lengkap, tf.nominal , tf.sisa_saldo from transfers tf inner join users us on tf.id_user_pengirim = us.id_user inner join users ur on tf.id_user_penerima = ur.id_user where us.id_user = ? order by tf.id_transfers desc"
 	statement, errPrepare := db.Prepare(query)
 	if errPrepare != nil {
 		return []_entities.HistoryTransfer{}, errPrepare
