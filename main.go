@@ -104,6 +104,7 @@ func main() {
 		switch pilih {
 		case 1:
 			result := _controllUsers.ReadUserInfo(DBConn, idAccount)
+			fmt.Println("Profil Account")
 			fmt.Println("Nama: ", result.NamaLengkap)
 			fmt.Println("Nick Name: ", result.NickName)
 			fmt.Println("Nomer Telpon: ", result.Telp)
@@ -115,7 +116,8 @@ func main() {
 			var telp string
 			var pass string
 			fmt.Println("Masukkan data baru")
-			fmt.Println("Jika data tidak ingin diubah silahkan dikosongkan")
+			fmt.Println("Jika data tidak ingin diubah silahkan")
+			fmt.Println("dikosongkan (diisi dengan simbol '-') ")
 			fmt.Print("Masukkan Nama Lengkap: ")
 			fmt.Scan(&namaLengkap)
 			fmt.Print("\n")
@@ -128,32 +130,39 @@ func main() {
 			fmt.Print("Masukkan Password: ")
 			fmt.Scan(&pass)
 			fmt.Print("\n")
-			var query = "update users ur set "
+			var query = "update users ur"
 			coma := 0
-			if namaLengkap != "" {
-				query += fmt.Sprintf("ur.nama_lengkap = '%s'", namaLengkap)
+			if namaLengkap != "-" {
+				query += fmt.Sprintf(" set ur.nama_lengkap = '%s'", namaLengkap)
 				coma++
 			}
-			if nickName != "" && coma == 0 {
-				query += fmt.Sprintf("ur.nick_name = '%s'", nickName)
+			if nickName != "-" && coma == 0 {
+				query += fmt.Sprintf(" set ur.nick_name = '%s'", nickName)
 				coma++
-			} else if nickName != "" && coma == 1 {
+			} else if nickName != "-" && coma == 1 {
 				query += fmt.Sprintf(",ur.nick_name = '%s'", nickName)
 			}
-			if telp != "" && coma == 0 {
-				query += fmt.Sprintf("ur.telp = '%s'", telp)
-			} else if telp != "" {
+			if telp != "-" && coma == 0 {
+				query += fmt.Sprintf(" set ur.telp = '%s'", telp)
+			} else if telp != "-" {
 				query += fmt.Sprintf(",ur.telp = '%s'", telp)
 			}
-			// if pass != "" {
-			//_controllUserAccount
-			// }
-			query += " where ur.id_user = ?"
-			_, err := _controllUsers.PutDataUser(DBConn, query, idAccount)
-			if err != nil {
-				fmt.Println("Update Gagal", err.Error())
-			} else {
-				fmt.Println("Update Berhasil")
+			if query != "update users ur" {
+				query += " where ur.id_user = ?"
+				_, err := _controllUsers.PutDataUser(DBConn, query, idAccount)
+				if err != nil {
+					fmt.Println("Account Gagal Terupdate", err.Error())
+				} else {
+					fmt.Println("Account Berhasil Terupdate")
+				}
+			}
+			if pass != "-" {
+				_, err := _controllUserAccount.PutUserPassword(DBConn, pass, idAccount)
+				if err != nil {
+					fmt.Println("Password gagal diupdate")
+				} else {
+					fmt.Println("Password telah diupdate")
+				}
 			}
 			fmt.Print("\n")
 		case 3:
