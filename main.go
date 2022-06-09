@@ -35,9 +35,14 @@ func main() {
 			var telp string
 			fmt.Scan(&telp)
 			fmt.Print("\n")
+			fmt.Print("Masukkan Password Account: ")
+			var pass string
+			fmt.Scan(&pass)
+			fmt.Print("\n")
 			idAccount = _controllUsers.GetIdUsersByTelp(DBConn, telp)
-			if idAccount == -1 {
-				fmt.Println("Account tidak ditemukan, silahkan melakukan register terlebih dahulu")
+			passAccount := _controllUserAccount.GetUserPassword(DBConn, idAccount)
+			if idAccount == -1 && _controllUserAccount.CheckPassword(pass, passAccount) {
+				fmt.Println("Account tidak ditemukan, silahkan melakukan register terlebih dahulu ATAU Password anda salah")
 			} else {
 				fmt.Println("Account terdaftar")
 				ticket = true
@@ -52,7 +57,7 @@ func main() {
 			fmt.Print("Masukkan Nick Name: ")
 			fmt.Scan(&newUser.NickName)
 			fmt.Print("\n")
-			fmt.Println("Masukkan Nomer Telepon: ")
+			fmt.Print("Masukkan Nomer Telepon: ")
 			fmt.Scan(&newUser.Telp)
 			fmt.Print("\n")
 			fmt.Print("Masukkan Password: ")
