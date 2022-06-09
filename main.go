@@ -175,18 +175,24 @@ func main() {
 			fmt.Scan(&pilih1)
 			fmt.Print("\n")
 			if pilih1 == 1 {
-				_controllUsers.DeleteUser(DBConn, idAccount)
-				ticket = false
+				_, errUser := _controllUsers.DeleteUser(DBConn, idAccount)
+				_, errPass := _controllUserAccount.DeleteUserPassword(DBConn, idAccount)
+				if errUser != nil && errPass != nil {
+					fmt.Println("Account gagal terdelete")
+				} else {
+					fmt.Println("Account Berhasil Terdelete")
+					ticket = false
+				}
 			} else {
 				fmt.Println("Account Tidak Dihapus oleh User")
 			}
 			fmt.Print("\n")
 		case 4:
-			var nominal int
+			var nominal uint
 			fmt.Print("Silahkan Masukkan Nominal Top Up: ")
 			fmt.Scan(&nominal)
 			fmt.Print("\n")
-			_, err := _controllTopUps.PostTopUp(DBConn, idAccount, nominal)
+			_, err := _controllTopUps.PostTopUp(DBConn, idAccount, int(nominal))
 			if err != nil {
 				fmt.Println(err.Error())
 			} else {
@@ -199,11 +205,11 @@ func main() {
 			fmt.Scan(&telpPenerima)
 			fmt.Print("\n")
 			fmt.Print("Masukkan Nominal Transfer: ")
-			var nominal int
+			var nominal uint
 			fmt.Scan(&nominal)
 			fmt.Print("\n")
 			var idPenerima = _controllUsers.GetIdUsersByTelp(DBConn, telpPenerima)
-			_, err := _controllTransfers.PostTransfer(DBConn, idAccount, idPenerima, nominal)
+			_, err := _controllTransfers.PostTransfer(DBConn, idAccount, idPenerima, int(nominal))
 			if err != nil {
 				fmt.Println(err.Error())
 			} else {
@@ -240,6 +246,7 @@ func main() {
 			fmt.Print("\n")
 			idLain := _controllUsers.GetIdUsersByTelp(DBConn, telp)
 			result := _controllUsers.ReadUserInfo(DBConn, idLain)
+			fmt.Println("Profil Accpunt Lain")
 			fmt.Println("Nama: ", result.NamaLengkap)
 			fmt.Println("Nick Name: ", result.NickName)
 			fmt.Println("Nomer Telpon: ", result.Telp)
@@ -247,6 +254,7 @@ func main() {
 		case 9:
 			fmt.Println("Terimakasih Atas Kunjungannya")
 			ticket = false
+			defer DBConn.Close()
 		}
 	}
 }
