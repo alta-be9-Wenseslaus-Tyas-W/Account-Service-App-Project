@@ -16,10 +16,8 @@ func GetIdUsersByTelp(db *sql.DB, telp string) int {
 	result := db.QueryRow(query, &telp).Scan(&id)
 	if result != nil {
 		if result == sql.ErrNoRows {
-			fmt.Println(result.Error())
 			return -1
 		}
-		fmt.Println(result.Error())
 		return -1
 	}
 	return id
@@ -41,67 +39,72 @@ func PostNewUser(db *sql.DB, newUser _entities.Users) (int, error) {
 	}
 }
 
-func GetUserSaldo(db *sql.DB, idUser int) int {
+func GetUserSaldo(db *sql.DB, idUser int) (int, error) {
 	var query = "SELECT saldo FROM users WHERE id_user = ?"
 	var saldo int
 	result := db.QueryRow(query, &idUser).Scan(&saldo)
 	if result != nil {
 		if result == sql.ErrNoRows {
-			fmt.Println(result.Error())
-			return -1
+			return -1, result
 		}
-		fmt.Println(result.Error())
-		return -1
+		return -1, result
 	}
-	return saldo
+	return saldo, nil
 }
 
-func PostTambahSaldo(db *sql.DB, idUser int, nominal int) {
+func PostTambahSaldo(db *sql.DB, idUser int, nominal int) (int, error) {
 	var query = "update users set saldo = (?) where id_user = (?)"
 	statement, errPrepare := db.Prepare(query)
 	if errPrepare != nil {
-		fmt.Println("error", errPrepare.Error())
+		return 0, errPrepare
 	}
-	var newSaldo = nominal + GetUserSaldo(db, idUser)
+	saldo, errSaldo := GetUserSaldo(db, idUser)
+	if errSaldo != nil {
+		return 0, errSaldo
+	}
+	var newSaldo = nominal + saldo
 	result, err := statement.Exec(&newSaldo, &idUser)
 	if err != nil {
-		fmt.Println("error", err.Error())
+		return 0, err
 	} else {
 		row, _ := result.RowsAffected()
-		fmt.Println(row)
+		return int(row), nil
 	}
 }
 
-func PostKurangSaldo(db *sql.DB, idUser int, nominal int) {
+func PostKurangSaldo(db *sql.DB, idUser int, nominal int) (int, error) {
 	var query = "update users set saldo = (?) where id_user = (?)"
 	statement, errPrepare := db.Prepare(query)
 	if errPrepare != nil {
-		fmt.Println("error", errPrepare.Error())
+		return 0, errPrepare
 	}
-	var newSaldo = GetUserSaldo(db, idUser) - nominal
+	saldo, errSaldo := GetUserSaldo(db, idUser)
+	if errSaldo != nil {
+		return 0, errSaldo
+	}
+	var newSaldo = saldo - nominal
 	result, err := statement.Exec(&newSaldo, &idUser)
 	if err != nil {
-		fmt.Println("error", err.Error())
+		return 0, err
 	} else {
 		row, _ := result.RowsAffected()
-		fmt.Println(row)
+		return int(row), nil
 	}
 }
 
-func DeleteUser(db *sql.DB, id int) {
+func DeleteUser(db *sql.DB, id int) (int, error) {
 	var delete = "DELETE from users WHERE id_user = ? "
 	statment, errPrepare := db.Prepare((delete))
 	if errPrepare != nil {
-		fmt.Println("error", errPrepare.Error())
+		return 0, errPrepare
 	}
 	var result, err = statment.Exec(&id)
 	if err != nil {
-		fmt.Println("error", err.Error())
+		return 0, err
 	} else {
 		row, _ := result.RowsAffected()
-		fmt.Println(row)
+		return int(row), nil
 	}
-
 }
 
 func ReadUserInfo(db *sql.DB, id int) _entities.Users {
