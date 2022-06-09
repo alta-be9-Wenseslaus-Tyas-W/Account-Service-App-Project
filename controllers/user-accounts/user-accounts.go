@@ -9,7 +9,7 @@ import (
 )
 
 func GetAllUserAccounts(db *sql.DB) []_entities.UserAccount {
-	results, err := db.Query("SELECT password FROM Users-Accounts")
+	results, err := db.Query("SELECT id_user_accounts, user_password FROM users_accounts")
 	if err != nil {
 		fmt.Println("error", err.Error())
 	}
@@ -17,7 +17,7 @@ func GetAllUserAccounts(db *sql.DB) []_entities.UserAccount {
 	var dataAll []_entities.UserAccount
 	for results.Next() {
 		var useraccounts _entities.UserAccount
-		err := results.Scan(&useraccounts.Password)
+		err := results.Scan(&useraccounts.IdUserAccounts, &useraccounts.Password)
 
 		if err != nil {
 			fmt.Println("error scan", err.Error())
@@ -57,6 +57,22 @@ func GetUserPassword(db *sql.DB, id int) string {
 		return ""
 	}
 	return pass
+}
+
+func PutUserPassword(db *sql.DB, newPass string, id int) (int, error) {
+	var query = "update user_accounts set user_password = ? where id_user_accounts = ?"
+	statement, errPrepare := db.Prepare(query)
+	if errPrepare != nil {
+		return 0, errPrepare
+	}
+	var pass = GetMD5Hash(newPass)
+	result, err := statement.Exec(&pass, &id)
+	if err != nil {
+		return 0, err
+	} else {
+		row, _ := result.RowsAffected()
+		return int(row), nil
+	}
 }
 
 func GetMD5Hash(message string) string {
