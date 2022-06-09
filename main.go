@@ -80,6 +80,7 @@ func main() {
 					fmt.Println("Password Berhasil Terdaftar")
 				}
 			}
+			fmt.Print("\n")
 		} else {
 			fmt.Println("Terimakasih Atas Kunjungannya")
 			break
@@ -117,7 +118,7 @@ func main() {
 			var pass string
 			fmt.Println("Masukkan data baru")
 			fmt.Println("Jika data tidak ingin diubah silahkan")
-			fmt.Println("dikosongkan (diisi dengan simbol '-') ")
+			fmt.Println("dikosongkan (isi dengan simbol '-') ")
 			fmt.Print("Masukkan Nama Lengkap: ")
 			fmt.Scan(&namaLengkap)
 			fmt.Print("\n")
@@ -171,7 +172,7 @@ func main() {
 			fmt.Println("1. Ya. Saya akan menghapus account milik saya")
 			fmt.Println("2. Tidak. Saya tidak yakin untuk menghapus account milik saya")
 			var pilih1 int
-			fmt.Print("Pilihan saya:")
+			fmt.Print("Pilihan saya: ")
 			fmt.Scan(&pilih1)
 			fmt.Print("\n")
 			if pilih1 == 1 {
