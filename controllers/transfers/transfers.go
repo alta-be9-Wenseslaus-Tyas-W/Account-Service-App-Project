@@ -35,18 +35,27 @@ func PostTransfer(db *sql.DB, idPemberi int, idPenerima int, nominal int) (int, 
 	if errPrepare != nil {
 		return 0, errPrepare
 	}
-	var saldoPemberi = _controllUsers.GetUserSaldo(db, idPemberi)
+	saldoPemberi, errSaldo := _controllUsers.GetUserSaldo(db, idPemberi)
+	if errSaldo != nil {
+		return 0, errSaldo
+	}
 	var sisaSaldo int
 	if saldoPemberi > nominal && saldoPemberi > 10000 {
 		sisaSaldo = saldoPemberi - nominal
-		_controllUsers.PostKurangSaldo(db, idPemberi, nominal)
+		_, errPostKurang := _controllUsers.PostKurangSaldo(db, idPemberi, nominal)
+		if errPostKurang != nil {
+			return 0, errPostKurang
+		}
 	} else {
 		fmt.Println("Saldo tidak mencukupi")
 		sisaSaldo = saldoPemberi
 		nominal = 0
 	}
 	result, err := statement.Exec(&idPemberi, &idPenerima, &nominal, &sisaSaldo)
-	_controllUsers.PostTambahSaldo(db, idPenerima, nominal)
+	_, errPostTambah := _controllUsers.PostTambahSaldo(db, idPenerima, nominal)
+	if errPostTambah != nil {
+		return 0, errPostTambah
+	}
 	if err != nil {
 		return 0, err
 	} else {
