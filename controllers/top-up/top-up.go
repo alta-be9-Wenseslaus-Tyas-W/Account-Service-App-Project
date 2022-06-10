@@ -51,7 +51,7 @@ func PostTopUp(db *sql.DB, idUser int, nominal int) (int, error) {
 }
 
 func GetHistoryTopUpById(db *sql.DB, idUser int) ([]_entities.TopUp, error) {
-	var query = "select id_top_ups , id_user , nominal from top_ups where id_user = ?"
+	var query = "select id_top_ups , id_user , nominal from top_ups where id_user = ? order by id_top_ups desc"
 	statement, errPrepare := db.Prepare(query)
 	if errPrepare != nil {
 		return []_entities.TopUp{}, errPrepare
